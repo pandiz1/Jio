@@ -23,7 +23,7 @@ jobs:
           echo '</head><body>' >> index.html
           
           echo '  <div class="logo-container">' >> index.html
-          echo '    <img src="https://jio.com" alt="Jio Logo">' >> index.html
+          echo '    <img src="https://myjiostatic.cdn.jio.com/jiocom/static/images/jio10.svg" alt="Jio Logo">' >> index.html
           echo '  </div>' >> index.html
           
           echo '  <h1>Jio Mumbai - Dashboard - Select Date</h1>' >> index.html
