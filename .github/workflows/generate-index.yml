@@ -18,7 +18,7 @@ jobs:
           echo '<html lang="en"><head>' >> index.html
           echo '  <meta charset="UTF-8">' >> index.html
           echo '  <meta name="viewport" content="width=device-width, initial-scale=1.0">' >> index.html
-          echo '  <title>Available Pages</title>' >> index.html
+          echo '  <title>Jio Mumbai Dashboard</title>' >> index.html
           echo '  <style>body{font-family:sans-serif;margin:40px;line-height:1.6;background:#f9f9f9;}h1{color:#333;border-bottom:2px solid #ddd;padding-bottom:10px;margin-top:50px;}ul{list-style-type:none;padding:0;}li{margin:12px 0;background:#fff;padding:12px;border-radius:6px;box-shadow:0 2px 4px rgba(0,0,0,0.05);}a{color:#0366d6;text-decoration:none;font-size:18px;font-weight:bold;}a:hover{text-decoration:underline;}.logo-container{position:absolute;top:20px;right:40px;}.logo-container img{height:60px;width:auto;}</style>' >> index.html
           echo '</head><body>' >> index.html
           
