@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Pages</title>
+    <style>
+        body { font-family: sans-serif; margin: 40px; line-height: 1.6; }
+        h1 { color: #333; }
+        ul { list-style-type: none; padding: 0; }
+        li { margin: 10px 0; }
+        a { color: #0366d6; text-decoration: none; font-size: 18px; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <h1>Available Pages</h1>
+    <ul id="file-list">Loading files...</ul>
+
+    <script>
+        // Configuration mapping exactly to your GitHub account
+        const username = "pandiz1";
+        const repo = "Jio"; 
+        const branch = "main"; // Change to "master" if your branch uses the old naming scheme
+
+        const apiUrl = `https://github.com{username}/${repo}/contents?ref=${branch}`;
+        const pagesBaseUrl = `https://${username}.github.io/${repo}/`;
+
+        async function fetchFiles() {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error("Failed to fetch repository data.");
+                
+                const files = await response.json();
+                const listElement = document.getElementById("file-list");
+                listElement.innerHTML = ""; 
+
+                files.forEach(file => {
+                    // Hide system folders, hidden configurations, and this index file itself
+                    if (file.name.startsWith('.') || file.name === 'index.html' || file.type === 'dir') {
+                        return;
+                    }
+
+                    const fileLink = pagesBaseUrl + file.path;
+
+                    const li = document.createElement("li");
+                    const a = document.createElement("a");
+                    a.href = fileLink;
+                    a.textContent = file.name;
+                    
+                    li.appendChild(a);
+                    listElement.appendChild(li);
+                });
+
+                if (listElement.children.length === 0) {
+                    listElement.textContent = "No visible project pages found in this directory.";
+                }
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById("file-list").textContent = "Error loading repository files.";
+            }
+        }
+
+        fetchFiles();
+    </script>
+</body>
+</html>
