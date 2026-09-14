@@ -3,7 +3,7 @@ name: Generate Directory Index
 on:
   push:
     branches:
-      - main # Change this to your branch name if different
+      - main
 
 jobs:
   generate-index:
@@ -15,12 +15,12 @@ jobs:
       - name: Generate Index File
         uses: gacts/directory-listing@v1
         with:
-          target: . # Scans the entire root directory
+          target: .
           
       - name: Commit and Push changes
         run: |
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.email "github-actions[bot]@://github.com"
           git add index.html
           git commit -m "Automated update of index.html directory listing" || exit 0
           git push
