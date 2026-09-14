@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repository Directory Index</title>
+    <style>
+        body { font-family: sans-serif; margin: 40px; line-height: 1.6; }
+        h1 { color: #333; }
+        ul { list-style-type: none; padding: 0; }
+        li { margin: 10px 0; }
+        a { color: #0366d6; text-decoration: none; font-size: 18px; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <h1 id="title">Available Pages</h1>
+    <ul id="file-list">Loading files...</ul>
+
+    <script>
+        // 1. CHANGE THESE CONFIGURATION VALUES TO MATCH YOUR REPO
+        const username = "YOUR_GITHUB_USERNAME";
+        const repo = "YOUR_REPO_NAME";
+        const branch = "main"; // e.g., 'main' or 'master'
+
+        // 2. Fetch repo structure via the GitHub REST API
+        const apiUrl = `https://github.com{username}/${repo}/contents?ref=${branch}`;
+        
+        // base URL where your GitHub Pages site is hosted
+        const pagesBaseUrl = `https://${username}.github.io/${repo}/`;
+
+        async function fetchFiles() {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error("Failed to fetch repository data.");
+                
+                const files = await response.json();
+                const listElement = document.getElementById("file-list");
+                listElement.innerHTML = ""; // Clear loading message
+
+                // Filter and loop through files
+                files.forEach(file => {
+                    // Skip hidden files, the index.html itself, and non-HTML files if you only want pages
+                    if (file.name.startsWith('.') || file.name === 'index.html') {
+                        return;
+                    }
+
+                    // Build the link assuming your site is deployed to GitHub Pages
+                    // (If a file is inside a folder, you might need recursive API logic)
+                    const fileLink = pagesBaseUrl + file.path;
+
+                    const li = document.createElement("li");
+                    const a = document.createElement("a");
+                    a.href = fileLink;
+                    a.textContent = file.name;
+                    
+                    li.appendChild(a);
+                    listElement.appendChild(li);
+                });
+
+                if (listElement.children.length === 0) {
+                    listElement.textContent = "No pages found in this directory.";
+                }
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById("file-list").textContent = "Error loading repository files.";
+            }
+        }
+
+        fetchFiles();
+    </script>
+</body>
+</html>
