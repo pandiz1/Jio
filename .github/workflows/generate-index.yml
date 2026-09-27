@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # IMPORTANT: fetch full history so git log works per file
 
       - name: Build custom index.html file with Logo
         run: |
@@ -29,12 +31,18 @@ jobs:
           echo '  <h1>Jio Mumbai - Dashboard - Select Date</h1>' >> index.html
           echo '  <ul>' >> index.html
           
+          # Build a list of "timestamp filename" pairs, then sort descending by timestamp
           for file in *.html; do
             if [ "$file" != "index.html" ]; then
-              # This cuts off the .html extension for the visible display text
-              display_name="${file%.html}"
-              echo "    <li><a href=\"$file\">$display_name</a></li>" >> index.html
+              # Get the Unix timestamp of the last commit that modified this file
+              ts=$(git log -1 --format=%ct -- "$file")
+              # Fallback to 0 if no history is found (newly added file)
+              ts=${ts:-0}
+              echo "$ts|$file"
             fi
+          done | sort -t'|' -k1,1nr | while IFS='|' read -r ts file; do
+            display_name="${file%.html}"
+            echo "    <li><a href=\"$file\">$display_name</a></li>" >> index.html
           done
           
           echo '  </ul>' >> index.html
@@ -43,7 +51,7 @@ jobs:
       - name: Force commit and save back to main branch
         run: |
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@://github.com"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add index.html
-          git commit -m "Remove .html extension from visible link text" || exit 0
+          git commit -m "Regenerate index.html (sorted by upload date, newest first)" || exit 0
           git push
